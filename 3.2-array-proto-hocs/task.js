@@ -11,7 +11,7 @@ function sum(...args) {
 }
 
 function compareArrays(arr1, arr2) {
-    return (arr1.every((currentValue,index) => currentValue === arr2[index]) &&
+    return ((arr1.length == arr2.length) &&
     arr2.every((currentValue,index) => currentValue === arr1[index]));
 }
 
@@ -20,23 +20,24 @@ function memorize(fn, limit) {
     let memory = [];
 
     if (arguments.length > 2) 
-        throw Error("Передано больше двух аргументов! Будут использованы только первые два!");
+        console.log("Передано больше двух аргументов! Будут использованы только первые два!");
 
     return (...innerArguments) => {
-        if (memory.length > arguments[1])
+        if (memory.length > limit)
             memory.shift();
 
         let itemInMemory = memory.find(currentValue => compareArrays(currentValue.args, innerArguments));
 
         if (itemInMemory) {
             return itemInMemory.result;
-        } else {
-            let newItemResult = arguments[0](...innerArguments);
-            memory.push({args: innerArguments,
-                         result: newItemResult
-                        });
-            return newItemResult;
-        }
+        } 
+        
+        let newItemResult = fn(...innerArguments);
+        memory.push({args: innerArguments,
+                     result: newItemResult
+                    });
+        return newItemResult;
+
     };
 }
 
